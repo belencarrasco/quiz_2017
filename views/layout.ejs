@@ -34,6 +34,7 @@
 
     <nav class="main" id="mainNav" role="navigation">
         <a href="/">Inicio</a>
+         <a href="/quizzes/randomplay">Jugar</a>
         <a href="/quizzes">Preguntas</a>
         <% if (session.user) { %>
             <a href="/users/<%= session.user.id %>/quizzes">Mis Preguntas</a>
@@ -42,6 +43,7 @@
         <% if (session.user) { %>
            <a href="/users">Usuarios</a>
         <% } %>
+        <a href="/help">Ayuda</a>
     </nav>
 
     <section class="main" id="mainSection">

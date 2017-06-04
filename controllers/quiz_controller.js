@@ -222,3 +222,72 @@ exports.check = function (req, res, next) {
         answer: answer
     });
 };
+// GET /quizzes/randomplay
+exports.randomPlay = function (req, res, next) {
+
+    if(!req.session.randomPlay){
+        req.session.randomPlay= {
+            resueltos: []};
+    }
+    // array con las preguntas ya resultas
+    var used = req.session.randomPlay.resueltos.length ? req.session.randomPlay.resueltos : [-1];
+
+    var whereOpt = {'id':{$notIn:used}};
+
+
+    models.Quiz.count(whereOpt)
+        .then(function (nQuestions) {
+
+            var idQuestion = Math.floor(Math.random() * nQuestions);
+
+          var findOptions = {
+                limit:1,
+                'id': {$gt: idQuestion},
+                where: whereOpt
+            };
+            return models.Quiz.findAll(findOptions);
+        })
+        .then(function (question) {
+
+            var numAciertos = req.session.randomPlay.resueltos.length;
+            var quiz = question[0];
+            if(!quiz) {
+                req.session.randomPlay.resueltos = [];
+                res.render('quizzes/random_nomore', {
+                    score: numAciertos
+                });
+            } else {
+                //var quiz =question[0];
+                //ar numAciertos = req.session.numAciertos ? req.session.numAciertos : 0;
+
+                res.render('quizzes/random_play', {
+                    score: numAciertos,
+                    quiz: quiz
+                });
+            }
+
+
+    }).catch(function (error) {
+        next(error);
+    });
+};
+// GET /quizzes/randomcheck
+exports.randomCheck = function (req, res, next) {
+    var answer = req.query.answer || "";
+
+    var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
+
+    if(!result){
+        req.session.randomPlay.resueltos = [];
+    }else{
+    req.session.randomPlay.resueltos.push(req.quiz.id);
+    }
+    var numAciertos = req.session.randomPlay.resueltos.length;
+    res.render('quizzes/random_result', {
+        quiz: req.quiz,
+        result: result,
+        score: numAciertos,//req.session.randomPlay.resueltos.length,
+        answer: answer
+    });
+
+};
