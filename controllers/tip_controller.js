@@ -37,9 +37,12 @@ exports.new = function (req, res, next) {
 // POST /quizzes/:quizId/tips
 exports.create = function (req, res, next) {
 
+    var authorId = req.session.user && req.session.user.id || 0;
+
     var tip = models.Tip.build(
         {
             text: req.body.text,
+            AuthorId: authorId,
             QuizId: req.quiz.id
         });
 
@@ -95,4 +98,18 @@ exports.destroy = function (req, res, next) {
     .catch(function (error) {
         next(error);
     });
+};
+
+// MW que permite acciones solamente si al usuario logueado es admin o es el autor del tip.
+exports.adminOrAuthorTip = function(req, res, next){
+
+    var isAdmin  = req.session.user.isAdmin;
+    var isAuthor = req.tip.AuthorId === req.session.user.id;
+
+    if (isAdmin || isAuthor) {
+        next();
+    } else {
+        console.log('Operación prohibida: El usuario logueado no es el autor del tip, ni un administrador.');
+        res.send(403);
+    }
 };
