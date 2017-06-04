@@ -276,11 +276,12 @@ exports.randomCheck = function (req, res, next) {
     var answer = req.query.answer || "";
 
     var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
-
+    var numAciertos = req.session.randomPlay.resueltos.length;
     if(!result){
         req.session.randomPlay.resueltos = [];
     }else{
     req.session.randomPlay.resueltos.push(req.quiz.id);
+    numAciertos = numAciertos+1;
     }
     var numAciertos = req.session.randomPlay.resueltos.length;
     res.render('quizzes/random_result', {
