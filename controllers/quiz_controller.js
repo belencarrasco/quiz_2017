@@ -279,6 +279,7 @@ exports.randomCheck = function (req, res, next) {
     var numAciertos = req.session.randomPlay.resueltos.length;
     if(!result){
         req.session.randomPlay.resueltos = [];
+        numAciertos = 0;
     }else{
     req.session.randomPlay.resueltos.push(req.quiz.id);
     numAciertos = numAciertos+1;
