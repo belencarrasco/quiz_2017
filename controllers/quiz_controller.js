@@ -283,7 +283,6 @@ exports.randomCheck = function (req, res, next) {
     req.session.randomPlay.resueltos.push(req.quiz.id);
     numAciertos = numAciertos+1;
     }
-    var numAciertos = req.session.randomPlay.resueltos.length;
     res.render('quizzes/random_result', {
         quiz: req.quiz,
         result: result,
