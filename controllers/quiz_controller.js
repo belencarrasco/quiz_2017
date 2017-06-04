@@ -225,8 +225,6 @@ exports.randomPlay = function (req, res, next) {
                 //var quiz =question[0];
                 //ar numAciertos = req.session.numAciertos ? req.session.numAciertos : 0;
 
-                req.session.randomPlay.resueltos.push(quiz.id);
-
                 res.render('quizzes/random_play', {
                     score: numAciertos,
                     quiz: quiz
@@ -243,12 +241,13 @@ exports.randomCheck = function (req, res, next) {
     var answer = req.query.answer || "";
 
     var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
-    var numAciertos = req.session.randomPlay.resueltos.length;
-    if(!result){
-        numAciertos=numAciertos -1;
-        req.session.randomPlay.resueltos = [];
-    }
 
+    if(!result){
+        req.session.randomPlay.resueltos = [];
+    }else{
+    req.session.randomPlay.resueltos.push(req.quiz.id);
+    }
+    var numAciertos = req.session.randomPlay.resueltos.length;
     res.render('quizzes/random_result', {
         quiz: req.quiz,
         result: result,
