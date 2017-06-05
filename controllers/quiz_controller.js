@@ -273,6 +273,12 @@ exports.randomPlay = function (req, res, next) {
 };
 // GET /quizzes/randomcheck
 exports.randomCheck = function (req, res, next) {
+
+    if(!req.session.randomPlay){
+        req.session.randomPlay= {
+            resueltos: []};
+    }
+
     var answer = req.query.answer || "";
 
     var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
