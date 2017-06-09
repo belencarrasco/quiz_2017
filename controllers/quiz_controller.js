@@ -200,14 +200,15 @@ exports.randomPlay = function (req, res, next) {
     var whereOpt = {'id':{$notIn:used}};
 
 
-    models.Quiz.count(whereOpt)
+    models.Quiz.count({where: whereOpt})
         .then(function (nQuestions) {
 
             var idQuestion = Math.floor(Math.random() * nQuestions);
 
           var findOptions = {
                 limit:1,
-                'id': {$gt: idQuestion},
+                offset: idQuestion,
+                //'id': {$gt: idQuestion},
                 where: whereOpt
             };
             return models.Quiz.findAll(findOptions);
